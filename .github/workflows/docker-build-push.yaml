@@ -1,0 +1,48 @@
+name: "Build & Push"
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag_version:
+        description: "Image tag versions (comma-separated)"
+        required: true
+        default: latest
+
+jobs:
+  build-push:
+    name: "Docker Build & Push"
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_TAG_BASE: "ghcr.io/david-lor/tor-privoxy"
+      IMAGE_TAG_INTERNAL: "tor-privoxy"
+    permissions:
+      packages: write
+      contents: read
+
+    steps:
+      # Setup
+      - name: "Checkout"
+        uses: actions/checkout@master
+        with:
+          fetch-depth: 1
+
+      # Registry login
+      - name: "Login to GitHub Container Registry"
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Docker Build & Push
+      - name: "Docker build"
+        run: docker build . -t ${{ env.IMAGE_TAG_INTERNAL }}
+      - name: "Docker push tags"
+        run: |
+          for image_tag_version in $(echo "${{ github.event.inputs.image_tag_version }}" | sed "s/,/ /g")
+          do
+            IMAGE_TAG_FULL="${{ env.IMAGE_TAG_BASE }}:$image_tag_version"
+            echo "Tagging & Pushing image tag: $IMAGE_TAG_FULL"
+
+            docker tag "${{ env.IMAGE_TAG_INTERNAL }}" "$IMAGE_TAG_FULL"
+            docker push "$IMAGE_TAG_FULL"
+          done
