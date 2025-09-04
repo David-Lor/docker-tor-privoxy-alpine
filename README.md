@@ -16,4 +16,7 @@ And that's it! Read the accompanying [blog post](https://medium.com/@rdsubhas/do
 
 ## Fork details
 
-The changes of this fork compared with the original repository are limited to having a recent build of the Docker image, with updated Alpine baseimage and Tor client (which is installed from the Alpine repositories).
+The changes of this fork compared with the original repository are limited to:
+
+- Having a recent build of the Docker image, with updated Alpine baseimage and Tor client (which is installed from the Alpine repositories).
+- Add curl.
