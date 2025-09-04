@@ -20,3 +20,4 @@ The changes of this fork compared with the original repository are limited to:
 
 - Having a recent build of the Docker image, with updated Alpine baseimage and Tor client (which is installed from the Alpine repositories).
 - Add curl.
+- Proposal of a [healthcheck script](healthcheck.sh) (not included in the Docker image).
